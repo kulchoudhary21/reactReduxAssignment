@@ -7,6 +7,9 @@ import Radio from "./component/Radio";
 import Select from "./component/Select";
 import Table from "./component/Table";
 import { connect } from "react-redux";
+import { forSubmit } from "./function/Submit";
+import { forDelete } from "./function/Delete";
+import { forEdit } from "./function/Edit";
 
 let list = [];
 function App(props) {
@@ -97,7 +100,7 @@ function App(props) {
             date,
             gender,
             select,
-            props.Myname.list,
+            props.myName.list,
             list,
             passwd
           );
@@ -106,13 +109,13 @@ function App(props) {
       <br />
       <div>
         <Table
-          data={props.Myname.list}
+          data={props.myName.list}
           onDelete={(index) => {
-            props.delet(props.Myname.list, index);
+            props.delet(props.myName.list, index);
           }}
           onEdit={(index) => {
             props.edit(
-              props.Myname.list,
+              props.myName.list,
               index,
               name,
               eamil,
@@ -129,7 +132,7 @@ function App(props) {
 
 const mapStateToProps = (state) => {
   return {
-    Myname: state,
+    myName: state,
   };
 };
 
@@ -143,27 +146,14 @@ const mapDispatchToProps = (dispatch) => {
         gender: gender,
         select: select,
       });
-      dispatch({
-        type: "SUBMIT",
-        payload: {
-          name: name,
-          email: email,
-          date: date,
-          gender: gender,
-          select: select,
-          list: list,
-        },
-      });
+
+      dispatch(forSubmit(name, email, date, gender, select, list));
     },
+
     delet: (list, index) => {
       list.splice(index, 1);
 
-      dispatch({
-        type: "DELETE",
-        payload: {
-          list: list,
-        },
-      });
+      dispatch(forDelete(list));
     },
     edit: (list, index, name, email, date, gender, select) => {
       list[index].name = name;
@@ -172,12 +162,7 @@ const mapDispatchToProps = (dispatch) => {
       list[index].gender = gender;
       list[index].select = select;
 
-      dispatch({
-        type: "EDIT",
-        payload: {
-          list: list,
-        },
-      });
+      dispatch(forEdit(list));
     },
   };
 };
